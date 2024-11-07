@@ -1,0 +1,554 @@
+<!-- index.html (frontend) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Terra-Auto - Automation of State</title>
+    <!-- Include Bootstrap CSS (Bootstrap 5) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Include Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS Styles -->
+    <style>
+        /* Global Styles */
+        body {
+            background: linear-gradient(135deg, #e3f2fd, #ffffff);
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            background-color: #fcfcfd;
+            box-shadow: 0 4px 8px rgba(37, 34, 34, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 50px;
+        }
+        .header .logo-left img{
+            height: 100px;
+            width: 100px;
+            object-fit: contain;
+        }
+        .header .logo-right img {
+            height: 100px;
+            width: 100px;
+            object-fit: contain;
+        }
+
+        /* Main Title Styling */
+        .main-title {
+            text-align: center;
+            margin: 5px 0;
+            color: #179bec;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .main-title h2 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+        }
+        .main-title h4 {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        /* Card Styles */
+        .card {
+            margin-top: 5px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-in-out;
+        }
+        .card-header {
+            background-color: #3d6ac9fb;
+            color: #fff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            padding: 20px;
+        }
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+
+        /* Form Styles */
+        .form-group label {
+            font-weight: 250;
+            margin-bottom: 5px;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            transition: border-color 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #2c6bca;
+            box-shadow: none;
+        }
+        .btn-primary {
+            background-color: #2c6bca;
+            border: none;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background-color: #1a4e96;
+        }
+
+        /* Output Styles */
+        #output {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 40px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            animation: fadeIn 1s ease-in-out;
+        }
+        #output h4 {
+            font-weight: bold;
+            color: #2c6bca;
+            margin-bottom: 20px;
+        }
+        #output-text {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+        }
+
+        /* Footer Styles */
+        .footer {
+            margin-top: 50px;
+            padding: 20px 0;
+            background-color: #2c6bca;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Modal Styles */
+        .modal-header {
+            background-color: #2c6bca;
+            color: #fff;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .modal-footer .btn-primary {
+            background-color: #2c6bca;
+            border: none;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-inner {
+                flex-direction: column;
+                padding: 20px;
+            }
+            .header .logo-left,
+            .header .logo-right {
+                margin: 10px 0;
+            }
+            .main-title h2 {
+                font-size: 2.5rem;
+            }
+            .main-title h4 {
+                font-size: 1.2rem;
+            }
+            .card-header h3 {
+                font-size: 1.5rem;
+            }
+            .card-body {
+                padding: 20px;
+            }
+            .form-control {
+                padding: 12px;
+            }
+            .btn-primary {
+                padding: 12px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header with both logos -->
+<div class="header">
+    <div class="header-inner">
+        <!-- Terra-Auto logo on the left -->
+        <div class="logo-left">
+            <img src="{{ url_for('static', filename='codincity-logo-resized.png') }}" alt="Terra-Auto Logo">
+        </div>
+        <div class="main-title">
+            <h2>TERRA_AUTO</h2>
+            <h4>STREAMLINE YOUR MULTICLOUD INFRASTRUCTURE WITH OUR INNOVATIVE SOLUTION</h4>
+        </div>
+        <!-- Codincity logo on the right -->
+        <div class="logo-right">
+            <img src="{{ url_for('static', filename='Untitled_design-removebg-preview.png') }}" alt="Codincity Logo">
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-header text-center">
+            <h3>Terra-Auto - Automation of State</h3>
+        </div>
+        <div class="card-body">
+            <!-- Step 1: AWS Credentials Form -->
+            <form id="credentials-form">
+                <h4 class="text-center mb-4">Enter AWS Credentials</h4>
+                <div class="form-group mb-4">
+                    <label for="awsAccessKeyId">AWS Access Key ID</label>
+                    <input type="text" class="form-control" id="awsAccessKeyId" placeholder="Enter your AWS Access Key ID" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid AWS Access Key ID.
+                    </div>
+                </div>
+                <div class="form-group mb-4">
+                    <label for="awsSecretAccessKey">AWS Secret Access Key</label>
+                    <input type="password" class="form-control" id="awsSecretAccessKey" placeholder="Enter your AWS Secret Access Key" required>
+                    <div class="invalid-feedback">
+                        Please enter a valid AWS Secret Access Key.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Validate AWS Credentials</button>
+            </form>
+
+            <!-- Step 2: VPC Options Form -->
+            <form id="vpc-form" style="display: none;">
+                <h4 class="text-center mb-4">Enter VPC Options</h4>
+                <div class="form-group mb-4">
+                    <label for="vpcIds">VPC IDs</label>
+                    <input type="text" class="form-control" id="vpcIds" placeholder="Enter VPC IDs, separated by commas" required>
+                    <small class="form-text text-muted">Example: vpc-12345678,vpc-87654321</small>
+                    <div class="invalid-feedback">
+                        Please enter valid VPC IDs separated by commas.
+                    </div>
+                </div>
+                <!-- Checkbox for Importing All VPCs -->
+                <div class="form-group form-check mb-4">
+                    <input type="checkbox" class="form-check-input" id="importAllVpcs">
+                    <label class="form-check-label" for="importAllVpcs">Import all VPCs in the selected region</label>
+                </div>
+                <div class="form-group mb-4">
+                    <label for="region">AWS Region</label>
+                    <select class="form-control" id="region" required>
+                        <option value="">Select Region</option>
+                        <option value="us-east-1">us-east-1 (N. Virginia)</option>
+                        <option value="us-east-2">us-east-2 (Ohio)</option>
+                        <option value="us-west-1">us-west-1 (N. California)</option>
+                        <option value="us-west-2">us-west-2 (Oregon)</option>
+                        <!-- Add other regions as needed -->
+                    </select>
+                    <div class="invalid-feedback">
+                        Please select a region.
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block mt-4">Run Script</button>
+            </form>
+
+            <!-- Output -->
+            <div id="output" style="display: none;">
+                <h4>Import Log</h4>
+                <pre id="output-text"></pre>
+                <button id="downloadExcelBtn" class="btn btn-success mt-3" style="display: none;">Download VPC Details as Excel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Success/Failure Messages -->
+<div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="modal-body-message"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+    &copy; 2023 Terra-Auto. All rights reserved.
+</div>
+
+<!-- Include Socket.IO Client Library -->
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+
+<!-- Include Bootstrap JS and dependencies -->
+<!-- Updated to Bootstrap 5 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Updated JavaScript Code -->
+<script>
+    // Initialize Socket.IO
+    const socket = io('http://localhost:5000');
+
+    // Listen for log messages from the server
+    socket.on('log', function(data) {
+        const outputDiv = document.getElementById('output');
+        const outputText = document.getElementById('output-text');
+        outputDiv.style.display = 'block';
+        outputText.textContent += data + '\n';
+        outputText.scrollTop = outputText.scrollHeight;  // Scroll to bottom
+    });
+
+    // Get the Socket.IO client ID (sid)
+    let sid = '';
+    socket.on('connect', function() {
+        sid = socket.id;
+        console.log('Socket.IO connected, sid:', sid);
+    });
+
+    let awsAccessKeyId = '';
+    let awsSecretAccessKey = '';
+
+    // Function to validate AWS Access Key ID format
+    function isValidAccessKeyId(keyId) {
+        const regex = /^[A-Z0-9]{20}$/;
+        return regex.test(keyId);
+    }
+
+    // Function to validate AWS Secret Access Key format
+    function isValidSecretAccessKey(secretKey) {
+        const regex = /^[A-Za-z0-9/+=]{40}$/;
+        return regex.test(secretKey);
+    }
+
+    // Function to validate VPC IDs
+    function isValidVpcIds(vpcIds) {
+        const regex = /^vpc-[0-9a-f]{8,17}$/;
+        return vpcIds.every(id => regex.test(id));
+    }
+
+    // Toggle VPC IDs input based on the checkbox
+    document.getElementById('importAllVpcs').addEventListener('change', function() {
+        const vpcIdsInput = document.getElementById('vpcIds');
+        if (this.checked) {
+            vpcIdsInput.disabled = true;
+            vpcIdsInput.value = '';
+            vpcIdsInput.classList.remove('is-invalid');
+        } else {
+            vpcIdsInput.disabled = false;
+        }
+    });
+
+    document.getElementById('credentials-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const accessKeyInput = document.getElementById('awsAccessKeyId');
+        const secretKeyInput = document.getElementById('awsSecretAccessKey');
+        let valid = true;
+
+        awsAccessKeyId = accessKeyInput.value.trim();
+        awsSecretAccessKey = secretKeyInput.value.trim();
+
+        // Reset validation
+        accessKeyInput.classList.remove('is-invalid');
+        secretKeyInput.classList.remove('is-invalid');
+
+        // Validate Access Key ID
+        if (!awsAccessKeyId || !isValidAccessKeyId(awsAccessKeyId)) {
+            accessKeyInput.classList.add('is-invalid');
+            valid = false;
+        }
+
+        // Validate Secret Access Key
+        if (!awsSecretAccessKey || !isValidSecretAccessKey(awsSecretAccessKey)) {
+            secretKeyInput.classList.add('is-invalid');
+            valid = false;
+        }
+
+        if (!valid) {
+            return;
+        }
+
+        // Send credentials to backend for validation
+        fetch('http://localhost:5000/validate-credentials', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                aws_access_key_id: awsAccessKeyId,
+                aws_secret_access_key: awsSecretAccessKey
+            })
+        })
+        .then(response => response.json().then(data => ({status: response.status, body: data})))
+        .then(({status, body}) => {
+            if (status === 200) {
+                showModal("Success", "Credentials are valid. Proceeding to VPC options.");
+                document.getElementById('credentials-form').style.display = 'none';
+                document.getElementById('vpc-form').style.display = 'block';
+            } else {
+                showModal("Error", `Invalid AWS credentials. ${body.error}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showModal("Error", 'An error occurred while validating credentials.');
+        });
+    });
+
+    document.getElementById('vpc-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Clear the output at the start
+        document.getElementById('output-text').textContent = '';
+
+        const vpcIdsInput = document.getElementById('vpcIds');
+        const regionSelect = document.getElementById('region');
+        const importAllVpcs = document.getElementById('importAllVpcs').checked;
+        let valid = true;
+
+        const vpcIdsRaw = vpcIdsInput.value.trim();
+        const region = regionSelect.value;
+
+        // Reset validation
+        vpcIdsInput.classList.remove('is-invalid');
+        regionSelect.classList.remove('is-invalid');
+
+        // Validate Region
+        if (!region) {
+            regionSelect.classList.add('is-invalid');
+            valid = false;
+        }
+
+        // Validate VPC IDs only if "Import All VPCs" is not checked
+        let vpcIds = [];
+        if (!importAllVpcs) {
+            if (!vpcIdsRaw) {
+                vpcIdsInput.classList.add('is-invalid');
+                valid = false;
+            } else {
+                vpcIds = vpcIdsRaw.split(',').map(id => id.trim());
+                if (!isValidVpcIds(vpcIds)) {
+                    vpcIdsInput.classList.add('is-invalid');
+                    valid = false;
+                }
+            }
+        }
+
+        if (!valid) {
+            return;
+        }
+
+        console.log("Submitting VPC IDs and Region:", vpcIds, region);
+
+        // Send data to backend to run the script
+        fetch('http://localhost:5000/run-script', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                vpcIds: vpcIds,
+                region: region,
+                aws_access_key_id: awsAccessKeyId,
+                aws_secret_access_key: awsSecretAccessKey,
+                sid: sid,  // Include the Socket.IO session ID
+                importAllVpcs: importAllVpcs  // New field
+            })
+        })
+        .then(response => response.json().then(data => ({status: response.status, body: data})))
+        .then(({status, body}) => {
+            if (status === 200) {
+                console.log("Response from server:", body);
+                // The output is now handled in real-time via Socket.IO
+                document.getElementById('downloadExcelBtn').style.display = 'block';
+                document.getElementById('downloadExcelBtn').onclick = function() {
+                    downloadExcel(vpcIdsRaw, region, awsAccessKeyId, awsSecretAccessKey, importAllVpcs);
+                };
+
+                // Show modal popup with import results
+                let successVPCs = body.results.success;
+                let failedVPCs = body.results.failed;
+
+                let message = '';
+                if (successVPCs.length > 0) {
+                    message += 'Successfully imported VPC(s): ' + successVPCs.join(', ') + '.\n';
+                }
+                if (failedVPCs.length > 0) {
+                    message += 'Failed to import VPC(s): ' + failedVPCs.join(', ') + '.\n';
+                }
+                if (body.repo_url) {
+                    message += 'Repository URL: ' + body.repo_url;
+                }
+
+                showModal('Import Results', message);
+
+            } else {
+                showModal("Error", `Error: ${body.message || 'An unexpected error occurred.'}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showModal("Error", 'An error occurred while running the script.');
+        });
+    });
+
+    function showModal(title, message) {
+        document.getElementById("messageModalLabel").innerText = title;
+        document.getElementById("modal-body-message").innerText = message;
+        const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
+        messageModal.show();
+    }
+
+    function downloadExcel(vpcIdsInput, region, awsAccessKeyId, awsSecretAccessKey, importAllVpcs) {
+        const params = new URLSearchParams({
+            vpcIds: vpcIdsInput,
+            region: region,
+            aws_access_key_id: awsAccessKeyId,
+            aws_secret_access_key: awsSecretAccessKey,
+            importAllVpcs: importAllVpcs
+        });
+
+        const url = `http://localhost:5000/download-excel?${params.toString()}`;
+        window.open(url, '_blank');
+    }
+</script>
+
+</body>
+</html>
