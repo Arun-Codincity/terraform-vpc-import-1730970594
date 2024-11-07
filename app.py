@@ -1,4 +1,4 @@
-# app.py (backend)
+# app.py
 from flask import Flask, request, jsonify, send_file, render_template
 from flask_cors import CORS
 import subprocess
@@ -791,33 +791,6 @@ def create_github_repository(repo_name: str, description: str, github_token: str
         raise Exception(f"Failed to create GitHub repository: {error_message}")
 
 
-def create_gitignore_file(base_path: str):
-    """Create a .gitignore file to exclude unnecessary files from the Git repository."""
-    gitignore_content = """
-# Exclude Terraform directories and files
-.terraform/
-*.tfstate
-*.tfstate.backup
-terraform.tfvars
-.terraform.lock.hcl
-
-# Exclude any log files
-*.log
-
-# Exclude Python compiled files
-__pycache__/
-*.pyc
-
-# Exclude system files
-.DS_Store
-Thumbs.db
-""".strip()
-
-    gitignore_path = os.path.join(base_path, ".gitignore")
-    with open(gitignore_path, "w") as f:
-        f.write(gitignore_content)
-
-
 @app.route('/validate-credentials', methods=['POST'])
 def validate_credentials():
     data = request.json
@@ -915,18 +888,7 @@ def run_script():
 
             clone_url, owner_login = create_github_repository(repo_name, description, github_token)
 
-            # Create .gitignore file
-            create_gitignore_file(base_path)
-
-            # Remove existing .git directory if it exists
-            git_dir = os.path.join(base_path, '.git')
-            if os.path.exists(git_dir):
-                if os.name == 'nt':
-                    subprocess.run(['rmdir', '/S', '/Q', git_dir], shell=True)
-                else:
-                    subprocess.run(['rm', '-rf', git_dir], cwd=base_path)
-
-            # Initialize Git repository in the base path
+            # Initialize Git repository in the base path (parent directory of parent_module and child_module)
             message = f"Initializing Git repository in {base_path}..."
             print(message)
             socketio.emit('log', message, to=sid)
@@ -934,14 +896,32 @@ def run_script():
             # Initialize git repository
             subprocess.run(['git', 'init'], cwd=base_path)
 
-            # Add .gitignore file to Git
-            subprocess.run(['git', 'add', '.gitignore'], cwd=base_path)
+            # Initialize Git LFS
+            message = "Initializing Git LFS..."
+            print(message)
+            socketio.emit('log', message, to=sid)
+            subprocess.run(['git', 'lfs', 'install'], cwd=base_path)
+
+            # Track large files with Git LFS
+            message = "Tracking large files with Git LFS..."
+            print(message)
+            socketio.emit('log', message, to=sid)
+
+            # Add patterns for files to be tracked by Git LFS
+            subprocess.run(['git', 'lfs', 'track', '*.exe'], cwd=base_path)
+            subprocess.run(['git', 'lfs', 'track', '*.zip'], cwd=base_path)
+            subprocess.run(['git', 'lfs', 'track', '*.tar.gz'], cwd=base_path)
+            subprocess.run(['git', 'lfs', 'track', '*.so'], cwd=base_path)
+            subprocess.run(['git', 'lfs', 'track', '*.dll'], cwd=base_path)
+
+            # Add the .gitattributes file created by Git LFS
+            subprocess.run(['git', 'add', '.gitattributes'], cwd=base_path)
 
             # Configure user name and email
             subprocess.run(['git', 'config', 'user.name', 'Terra-Auto'], cwd=base_path)
             subprocess.run(['git', 'config', 'user.email', 'terra-auto@example.com'], cwd=base_path)
 
-            # Add other files
+            # Add files
             subprocess.run(['git', 'add', '.'], cwd=base_path)
 
             # Commit changes
